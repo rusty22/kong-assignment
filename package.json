@@ -1,0 +1,22 @@
+{
+  "name": "kong-assignment",
+  "version": "1.0.0",
+  "description": "Kong take home assignment",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rusty22/kong-assignment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rusty22/kong-assignment/issues"
+  },
+  "homepage": "https://github.com/rusty22/kong-assignment#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.4.0"
+  }
+}
