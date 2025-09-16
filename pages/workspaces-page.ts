@@ -1,7 +1,8 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './shared/base-page';
+import { KongCallToActionComponent } from './components/call-to-action-component';
 
-interface MetricValues {
+interface WorkspaceSummaryMetricValues {
   services: Number | null;
   routes: Number | null;
   consumers: Number | null;
@@ -81,15 +82,7 @@ export class WorkspacesPage extends BasePage {
   readonly pageSizeDropdownTrigger: Locator;
 
   // Konnect CTA section
-  readonly konnectCtaCard: Locator;
-  readonly konnectLogo: Locator;
-  readonly konnectTitle: Locator;
-  readonly konnectDescription: Locator;
-  readonly konnectFeaturesList: Locator;
-  readonly konnectFeatureItems: Locator;
-  readonly konnectGetStartedButton: Locator;
-  readonly konnectPreviewImage: Locator;
-  readonly konnectFooterDescription: Locator;
+  readonly callToActionComponent: KongCallToActionComponent;
 
   constructor(page: Page) {
     super(page)
@@ -101,7 +94,6 @@ export class WorkspacesPage extends BasePage {
     // License notification
     this.licenseNotification = page.locator('.invalid-license-notification');
     this.licenseNotificationMessage = this.licenseNotification.locator('.alert-message');
-
 
     // Summary card metrics
     this.summaryCard = page.locator('.workspace-overview-summary');
@@ -140,7 +132,7 @@ export class WorkspacesPage extends BasePage {
     this.routesHeader = page.getByTestId('table-header-totalRoutes');
     
     this.workspaceRows = this.workspaceTable.locator('tbody tr');
-    this.defaultWorkspaceLink = page.getByTestId('workspace-link-default');
+    this.defaultWorkspaceLink = this.workspaceRows.getByTestId('workspace-link-default');
     this.defaultWorkspaceIcon = this.defaultWorkspaceLink.locator('.workspace-icon');
     this.defaultWorkspaceName = this.defaultWorkspaceLink.locator('.workspace-name');
 
@@ -151,16 +143,8 @@ export class WorkspacesPage extends BasePage {
     this.pageSizeDropdown = page.getByTestId('page-size-dropdown');
     this.pageSizeDropdownTrigger = page.getByTestId('page-size-dropdown-trigger');
 
-    // Konnect CTA section
-    this.konnectCtaCard = page.locator('.konnect-cta-container');
-    this.konnectLogo = this.konnectCtaCard.locator('.konnect-logo');
-    this.konnectTitle = this.konnectCtaCard.locator('.konnect-cta-title');
-    this.konnectDescription = this.konnectCtaCard.locator('.konnect-cta-description');
-    this.konnectFeaturesList = this.konnectCtaCard.locator('.konnect-cta-list');
-    this.konnectFeatureItems = this.konnectFeaturesList.locator('.konnect-cta-item');
-    this.konnectGetStartedButton = this.konnectCtaCard.locator('.konnect-cta-footer .k-button');
-    this.konnectPreviewImage = this.konnectCtaCard.locator('.konnect-preview');
-    this.konnectFooterDescription = this.konnectCtaCard.locator('.konnect-cta-footer-description');
+    // Kong Konnect - Call to Action component
+    this.callToActionComponent = new KongCallToActionComponent(page);
   }
 
   // Utility methods
@@ -175,7 +159,7 @@ export class WorkspacesPage extends BasePage {
     return await metricLocator.textContent();
   }
 
-  async getAllMetricValues(): Promise<MetricValues> {
+  async getAllMetricValues(): Promise<WorkspaceSummaryMetricValues> {
     return {
       services: Number(await this.getMetricValue('Services')),
       routes: Number(await this.getMetricValue('Routes')),

@@ -5,12 +5,20 @@ export class KongLandingPage {
   readonly page: Page;
   readonly title: Locator;
 
+  // Top navigation locators
+  readonly docsDropdown: Locator;
+  readonly docsDropdownOptions: Locator;
+  readonly infoLink: Locator;
+  readonly githubStars: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.title = page.locator('h1', { hasText: 'Installation' });
-  }
-
-  async goto() {
-    await this.page.goto('http://localhost:8002/');
+    
+    // Top navigation
+    this.docsDropdown = page.locator('.docs-dropdown .dropdown-trigger');
+    this.docsDropdownOptions = page.locator('.docs-dropdown .dropdown-list .k-dropdown-item');
+    this.infoLink = page.locator('.info-link');
+    this.githubStars = page.locator('.github-star');
   }
 }
