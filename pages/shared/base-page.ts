@@ -1,37 +1,34 @@
 import { Locator, Page } from "@playwright/test";
+import { KongSideBarComponent } from "../components/kong-sidebar-component";
+import { KongHeaderComponent } from "../components/header-component";
 
 export class BasePage {
     readonly page: Page;
     readonly title: Locator;
         
-    // Navigation locators
-    readonly sidebar: Locator;
-    readonly sidebarWorkspacesLink: Locator;
-    readonly sidebarTeamsLink: Locator;
-    readonly sidebarDevPortalLink: Locator;
-    readonly sidebarAnalyticsLink: Locator;
+    // Sidebar Navigation Component
+    readonly kongHeader: KongHeaderComponent;
+    readonly kongSideNavBar: KongSideBarComponent;
 
     // Header Locators
     readonly kongManagerLogo: Locator;
     readonly newWorkspaceButton: Locator;
-    
+
+    // Miscellaneous and notifications locators
     readonly makeAWishLink: Locator;
+    readonly statusMessage: Locator;
 
     constructor(page: Page) {
         this.page = page;
         this.title = page.locator('h3');
-        
-        // Navigation elements
-        this.sidebar = page.locator('.kong-ui-app-sidebar');
-        this.sidebarWorkspacesLink = page.getByTestId('sidebar-item-workspaces').locator('a');
-        this.sidebarTeamsLink = page.getByTestId('sidebar-item-teams').locator('a');
-        this.sidebarDevPortalLink = page.getByTestId('sidebar-item-dev-portal--konnect-').locator('a');
-        this.sidebarAnalyticsLink = page.getByTestId('sidebar-item-analytics--konnect-').locator('a');
 
-        // Header elements
-        this.kongManagerLogo = page.locator('.brand-logo')
-        this.newWorkspaceButton = page.locator('.create-workspace-submit');
-
+        this.kongHeader = new KongHeaderComponent(page);
+        this.kongSideNavBar = new KongSideBarComponent(page);
         this.makeAWishLink = page.locator('.make-a-wish');
+        this.statusMessage = page.locator('.toaster-message');
+    }
+
+    async waitForPageLoad(): Promise<void> {
+        await this.page.waitForLoadState('networkidle');
     }
 }

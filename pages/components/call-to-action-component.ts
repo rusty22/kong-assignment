@@ -3,7 +3,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 
 export class KongCallToActionComponent {
   readonly page: Page;
-  
+
   // Konnect CTA section
   readonly konnectCtaCard: Locator;
   readonly konnectLogo: Locator;
@@ -13,11 +13,11 @@ export class KongCallToActionComponent {
   readonly konnectFeatureItems: Locator;
   readonly konnectGetStartedButton: Locator;
   readonly konnectFooterDescription: Locator;
+  readonly konnectPreviewScreenshot: Locator;
 
   constructor(page: Page) {
     this.page = page;
 
-    // Konnect CTA section
     this.konnectCtaCard = page.locator('.konnect-cta-container');
     this.konnectLogo = this.konnectCtaCard.locator('.konnect-logo');
     this.konnectTitle = this.konnectCtaCard.locator('.konnect-cta-title');
@@ -26,6 +26,7 @@ export class KongCallToActionComponent {
     this.konnectFeatureItems = this.konnectFeaturesList.locator('.konnect-cta-item');
     this.konnectGetStartedButton = this.konnectCtaCard.locator('.konnect-cta-footer .k-button');
     this.konnectFooterDescription = this.konnectCtaCard.locator('.konnect-cta-footer-description');
+    this.konnectPreviewScreenshot = this.konnectCtaCard.locator('.konnect-preview-screenshot')
   }
 
 }

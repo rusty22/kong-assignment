@@ -3,18 +3,18 @@ import { BasePage } from './shared/base-page';
 import { KongCallToActionComponent } from './components/call-to-action-component';
 
 interface WorkspaceSummaryMetricValues {
-  services: Number | null;
-  routes: Number | null;
-  consumers: Number | null;
-  plugins: Number | null;
+  services: number | null;
+  routes: number | null;
+  consumers: number | null;
+  plugins: number | null;
   apiRequests: string | null;
 }
 
 interface WorkspaceRowData {
   name: string | null;
-  gatewayServices: string | null;
-  consumers: string | null;
-  routes: string | null;
+  gatewayServices: number | null;
+  consumers: number | null;
+  routes: number | null;
 }
 
 interface NavigationButtonsState {
@@ -147,13 +147,6 @@ export class WorkspacesPage extends BasePage {
     this.callToActionComponent = new KongCallToActionComponent(page);
   }
 
-  // Utility methods
-  async waitForPageLoad(): Promise<void> {
-    await this.pageLocator.waitFor({ state: 'visible' });
-    await this.summaryCard.waitFor({ state: 'visible' });
-    await this.workspaceListCard.waitFor({ state: 'visible' });
-  }
-
   async getMetricValue(metricName: string): Promise<string | null> {
     const metricLocator = this.page.getByTestId(metricName).locator('.metric-value-text');
     return await metricLocator.textContent();
@@ -175,9 +168,9 @@ export class WorkspacesPage extends BasePage {
     
     return {
       name: await cells.nth(0).textContent(),
-      gatewayServices: await cells.nth(1).textContent(),
-      consumers: await cells.nth(2).textContent(),
-      routes: await cells.nth(3).textContent()
+      gatewayServices: Number(await cells.nth(1).textContent()),
+      consumers: Number(await cells.nth(2).textContent()),
+      routes: Number(await cells.nth(3).textContent())
     };
   }
 

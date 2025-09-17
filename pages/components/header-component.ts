@@ -1,7 +1,7 @@
 
 import { expect, type Locator, type Page } from '@playwright/test';
 
-export class KongLandingPage {
+export class KongHeaderComponent {
   readonly page: Page;
   readonly title: Locator;
 
@@ -10,6 +10,7 @@ export class KongLandingPage {
   readonly docsDropdownOptions: Locator;
   readonly infoLink: Locator;
   readonly githubStars: Locator;
+  readonly brandLogo: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -20,5 +21,6 @@ export class KongLandingPage {
     this.docsDropdownOptions = page.locator('.docs-dropdown .dropdown-list .k-dropdown-item');
     this.infoLink = page.locator('.info-link');
     this.githubStars = page.locator('.github-star');
+    this.brandLogo = page.locator('.brand-logo')
   }
 }
