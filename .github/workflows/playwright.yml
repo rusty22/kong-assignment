@@ -6,7 +6,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  Run Playwright Tests:
+  Run_Playwright_Tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
