@@ -34,6 +34,7 @@ jobs:
           path: playwright-report/
           retention-days: 30
       - name: Teardown test environment
+        if: always()
         run: docker-compose down
       - name: Have a great day!
         run: echo "Have a great day!"
