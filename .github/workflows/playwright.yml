@@ -41,3 +41,4 @@ jobs:
           docker compose down
           popd
       - name: Have a great day!
+        run: exit 0
