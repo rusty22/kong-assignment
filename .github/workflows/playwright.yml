@@ -4,6 +4,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+
 jobs:
   test:
     timeout-minutes: 60
@@ -17,9 +18,13 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Setup docker & test environment
+      - name: Setup Docker
         uses: docker/setup-docker-action@v4
-        run: pushd manifests && docker-compose up -d && popd
+      - name: Start test environment with docker-compose
+        run: |
+          pushd manifests
+          docker-compose up -d
+          popd
       - name: Run Playwright tests
         run: npx playwright test
       - uses: actions/upload-artifact@v4
