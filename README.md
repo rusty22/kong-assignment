@@ -1,4 +1,5 @@
 # kong-assignment
+![CI](https://github.com/glendonngo/kong-assignment/actions/workflows/playwright.yml/badge.svg)
 
 Kong Take Home Assignment by Glendon Ngo.
 
@@ -38,3 +39,4 @@ Opens the Playwright UI Interactive Test Runner:
 ```
   npx playwright test --ui
 ```
+
