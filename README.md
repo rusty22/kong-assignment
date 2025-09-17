@@ -1,5 +1,5 @@
 # kong-assignment
-![CI](https://github.com/glendonngo/kong-assignment/actions/workflows/playwright.yml/badge.svg)
+![CI](https://github.com/rusty22/kong-assignment/actions/workflows/playwright.yml/badge.svg)
 
 Kong Take Home Assignment by Glendon Ngo.
 
