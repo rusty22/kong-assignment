@@ -23,7 +23,7 @@ jobs:
       - name: Start test environment with docker-compose
         run: |
           pushd manifests
-          docker-compose up -d
+          docker compose up -d
           popd
       - name: Run Playwright tests
         run: npx playwright test
@@ -35,6 +35,6 @@ jobs:
           retention-days: 30
       - name: Teardown test environment
         if: always()
-        run: docker-compose down
+        run: docker compose down
       - name: Have a great day!
         run: echo "Have a great day!"
