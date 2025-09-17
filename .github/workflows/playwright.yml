@@ -6,7 +6,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  Run Tests:
+  Run Playwright Tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -42,3 +42,4 @@ jobs:
           popd
       - name: Have a great day!
         run: exit 0
+
