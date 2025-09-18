@@ -73,145 +73,145 @@ test.describe('Kong Gateway User Journey Tests', () => {
           expect(workspaceOverviewMetrics.consumers).toBe(0)
           expect(workspaceOverviewMetrics.plugins).toBe(0);
         });
+      });
 
-        await test.step('When I navigate to the gateway services page', async () => {
-          await expect(workspacesOverviewPage.kongSideNavBar.gatewayServicesMenuItem).toBeEnabled();
-          await workspacesOverviewPage.kongSideNavBar.gatewayServicesMenuItem.click();
+      await test.step('When I navigate to the gateway services page', async () => {
+        await expect(workspacesOverviewPage.kongSideNavBar.gatewayServicesMenuItem).toBeEnabled();
+        await workspacesOverviewPage.kongSideNavBar.gatewayServicesMenuItem.click();
 
-          await gatewayServicesPage.waitForPageLoad();
+        await gatewayServicesPage.waitForPageLoad();
 
-          await test.step('Then I should be on the gateway services page in its empty state with table descriptions', async () => {
-            await expect(gatewayServicesPage.title).toHaveText('Gateway Services');
-            await expect(gatewayServicesPage.gatewayServicesTable.emptyTableStateIcon).toBeVisible();
-            await expect(gatewayServicesPage.gatewayServicesTable.emptyTableStateTitle).toBeVisible();
-            await expect(gatewayServicesPage.gatewayServicesTable.emptyTableStateTitle).toHaveText('Configure a New Gateway Service');
-            await expect(gatewayServicesPage.gatewayServicesTable.emptyTableStateMessage).toBeVisible();
-            await expect(gatewayServicesPage.gatewayServicesTable.emptyTableStateMessage).toHaveText('Gateway services are used to proxy traffic.');
-          });
+        await test.step('Then I should be on the gateway services page in its empty state with table descriptions', async () => {
+          await expect(gatewayServicesPage.title).toHaveText('Gateway Services');
+          await expect(gatewayServicesPage.gatewayServicesTable.emptyTableStateIcon).toBeVisible();
+          await expect(gatewayServicesPage.gatewayServicesTable.emptyTableStateTitle).toBeVisible();
+          await expect(gatewayServicesPage.gatewayServicesTable.emptyTableStateTitle).toHaveText('Configure a New Gateway Service');
+          await expect(gatewayServicesPage.gatewayServicesTable.emptyTableStateMessage).toBeVisible();
+          await expect(gatewayServicesPage.gatewayServicesTable.emptyTableStateMessage).toHaveText('Gateway services are used to proxy traffic.');
         });
+      });
 
-        await test.step('When I go to add a new gateway service', async () => {
-          await gatewayServicesPage.gatewayServicesTable.genericEmptyStateActionButton.click();
-          await expect(gatewayServicesPage.title).toHaveText('New Gateway Service');
+      await test.step('When I go to add a new gateway service', async () => {
+        await gatewayServicesPage.gatewayServicesTable.genericEmptyStateActionButton.click();
+        await expect(gatewayServicesPage.title).toHaveText('New Gateway Service');
 
-          await test.step('Then I should not be able to save', async () => {
-            await expect(gatewayServicesPage.saveButton).toBeDisabled();
+        await test.step('Then I should not be able to save', async () => {
+          await expect(gatewayServicesPage.saveButton).toBeDisabled();
+        });
+        
+        await test.step('When I add a name for the gateway service url (required field)', async () => {
+          await gatewayServicesPage.serviceUrlInput.fill('https://awesome.service.com');
+          await gatewayServicesPage.serviceNameInput.fill('awesome-service');
+
+          await test.step('Then the save button should be enabled', async () => {
+            await expect(gatewayServicesPage.saveButton).toBeEnabled();
+            await gatewayServicesPage.saveButton.click();
           });
-          
-          await test.step('When I add a name for the gateway service url (required field)', async () => {
-            await gatewayServicesPage.serviceUrlInput.fill('https://awesome.service.com');
-            await gatewayServicesPage.serviceNameInput.fill('awesome-service');
 
-            await test.step('Then the save button should be enabled', async () => {
-              await expect(gatewayServicesPage.saveButton).toBeEnabled();
-              await gatewayServicesPage.saveButton.click();
-            });
+          await test.step('And once I save I should be in the service details page with details about the new service', async () => {
+            
+            await expect(isUUID(await gatewayServicesPage.serviceIdCell.innerText())).toBeTruthy();
+            await expect(gatewayServicesPage.portCell).toHaveText('443')
+            await expect(gatewayServicesPage.pathCell).toHaveText(' – ')
+            await expect(gatewayServicesPage.hostNameCell).toHaveText('awesome.service.com')
+            await expect(gatewayServicesPage.lastUpdatedDateCell).toHaveText(expectedDateRegex)
+            await expect(gatewayServicesPage.createdDateCell).toHaveText(expectedDateRegex)
+            await expect(gatewayServicesPage.protocolCell).toHaveText('https')
+            await expect(gatewayServicesPage.tagsCell).toHaveText(' – ')
 
-            await test.step('And when I save I should be in the service details page with details about the new service', async () => {
-              
-              await expect(isUUID(await gatewayServicesPage.serviceIdCell.innerText())).toBeTruthy();
-              await expect(gatewayServicesPage.portCell).toHaveText('443')
-              await expect(gatewayServicesPage.pathCell).toHaveText(' – ')
-              await expect(gatewayServicesPage.hostNameCell).toHaveText('awesome.service.com')
-              await expect(gatewayServicesPage.lastUpdatedDateCell).toHaveText(expectedDateRegex)
-              await expect(gatewayServicesPage.createdDateCell).toHaveText(expectedDateRegex)
-              await expect(gatewayServicesPage.protocolCell).toHaveText('https')
-              await expect(gatewayServicesPage.tagsCell).toHaveText(' – ')
+            // TODO: Advanced details for gateway service
+          });
 
-              // TODO: Advanced details for gateway service
-            });
+          await test.step('And there should be 1 gateway service count in the workspace summary page', async () => {
+            await workspacesPage.navigate();
+            await workspacesPage.assertMetricValues(1, 0, 0, 0, '--');
 
-            await test.step('And there should be 1 gateway service count in the workspace summary page', async () => {
-              await workspacesPage.navigate();
-              await workspacesPage.assertMetricValues(1, 0, 0, 0, '--');
-
-              await test.step('And there should be 1 gateway services count in the workspaces table', async() => {
-                const workspaceMetrics = await workspacesPage.getWorkspaceRowData(0);
-                expect(workspaceMetrics.gatewayServices).toBe(1);
-
-                await test.step('And there should still be 0 counts for other entities', async() => {
-                  expect(workspaceMetrics.consumers).toBe(0)
-                  expect(workspaceMetrics.routes).toBe(0);
-                });
-              });
-            });
-
-            await test.step('And there should be 1 gateway service count in the default workspace overview page', async () => {
-              await workspacesOverviewPage.navigate('default');
-              const workspaceOverviewMetrics = await workspacesOverviewPage.getAllMetricValues();
-              expect(workspaceOverviewMetrics.services).toBe(1);
+            await test.step('And there should be 1 gateway services count in the workspaces table', async() => {
+              const workspaceMetrics = await workspacesPage.getWorkspaceRowData(0);
+              expect(workspaceMetrics.gatewayServices).toBe(1);
 
               await test.step('And there should still be 0 counts for other entities', async() => {
-                expect(workspaceOverviewMetrics.routes).toBe(0);
-                expect(workspaceOverviewMetrics.consumers).toBe(0)
-                expect(workspaceOverviewMetrics.plugins).toBe(0);
+                expect(workspaceMetrics.consumers).toBe(0)
+                expect(workspaceMetrics.routes).toBe(0);
               });
             });
           });
 
-          await test.step('When I navigate to the routes page', async () => {
-            await routesPage.kongSideNavBar.routesMenuItem.click();
-            await routesPage.routesTable.genericEmptyStateActionButton.click();
+          await test.step('And there should be 1 gateway service count in the default workspace overview page', async () => {
+            await workspacesOverviewPage.navigate('default');
+            const workspaceOverviewMetrics = await workspacesOverviewPage.getAllMetricValues();
+            expect(workspaceOverviewMetrics.services).toBe(1);
 
-            await test.step('Then I should be on the create route page and not be able to save', async () => {
-              await expect(routesPage.title).toHaveText('Create Route');
-              await expect(routesPage.saveButton).toBeDisabled();
+            await test.step('And there should still be 0 counts for other entities', async() => {
+              expect(workspaceOverviewMetrics.routes).toBe(0);
+              expect(workspaceOverviewMetrics.consumers).toBe(0)
+              expect(workspaceOverviewMetrics.plugins).toBe(0);
             });
+          });
+        });
+      });
 
-            await test.step('When I specify a route name for the route and choose the service it should belong to (required field)', async () => {
-              await routesPage.routeNameInput.fill('awesome-route');
-              await routesPage.gatewayServiceDropdown.fill('awesome-service');
-              await routesPage.routesPathInput.fill('/awesome/v1');
+      await test.step('When I navigate to the routes page', async () => {
+        await routesPage.kongSideNavBar.routesMenuItem.click();
+        await routesPage.routesTable.genericEmptyStateActionButton.click();
 
-              await test.step('Then the save button should be enabled', async () => {
-                await expect(routesPage.saveButton).toBeEnabled();
+        await test.step('Then I should be on the create route page and not be able to save', async () => {
+          await expect(routesPage.title).toHaveText('Create Route');
+          await expect(routesPage.saveButton).toBeDisabled();
+        });
+
+        await test.step('When I specify a route name for the route and choose the service it should belong to (required field)', async () => {
+          await routesPage.routeNameInput.fill('awesome-route');
+          await routesPage.gatewayServiceDropdown.fill('awesome-service');
+          await routesPage.routesPathInput.fill('/awesome/v1');
+
+          await test.step('Then the save button should be enabled', async () => {
+            await expect(routesPage.saveButton).toBeEnabled();
+          });
+
+          await test.step('And once I save I should be in the routes details page with details about the new service', async () => {
+            await routesPage.saveButton.click();
+            await expect(isUUID(await routesPage.routeIdCell.innerText())).toBeTruthy();
+            await expect(routesPage.routeNameCell).toHaveText('awesome-route')
+            await expect(routesPage.lastUpdatedDateCell).toHaveText(expectedDateRegex)
+            await expect(routesPage.createdDateCell).toHaveText(expectedDateRegex)
+            await expect(routesPage.tagsCell).toBeEmpty();
+            await expect(routesPage.protocolsBadgeCell.nth(0)).toContainText(/http/);
+            await expect(routesPage.protocolsBadgeCell.nth(1)).toContainText(/https/);
+            await expect(routesPage.pathsCell).toContainText('/awesome/v1');
+            await expect(routesPage.hostsCell).toHaveText(' – ');
+            await expect(routesPage.headersCell).toHaveText(' – ');
+            await expect(routesPage.methodsCell).toHaveText(' – ');
+            await expect(routesPage.sourcesCell).toHaveText(' – ');
+            await expect(routesPage.destinationsCell).toHaveText(' – ');
+
+            // TODO: Advanced details for route details
+          });
+
+          await test.step('And there should be 1 gateway service and 1 route count in the workspace summary page', async () => {
+            await workspacesPage.navigate();
+            await workspacesPage.assertMetricValues(1, 1, 0, 0, '--');
+
+            await test.step('And there should be 1 gateway services and 1 routes count in the workspaces table', async() => {
+              const workspaceMetrics = await workspacesPage.getWorkspaceRowData(0);
+              expect(workspaceMetrics.gatewayServices).toBe(1);
+              expect(workspaceMetrics.routes).toBe(1);
+
+              await test.step('And there should still be 0 counts for consumers entity', async() => {
+                expect(workspaceMetrics.consumers).toBe(0)
               });
+            });
+          });
 
-              await test.step('And when I save I should be in the routes details page with details about the new service', async () => {
-                await routesPage.saveButton.click();
-                await expect(isUUID(await routesPage.routeIdCell.innerText())).toBeTruthy();
-                await expect(routesPage.routeNameCell).toHaveText('awesome-route')
-                await expect(routesPage.lastUpdatedDateCell).toHaveText(expectedDateRegex)
-                await expect(routesPage.createdDateCell).toHaveText(expectedDateRegex)
-                await expect(routesPage.tagsCell).toBeEmpty();
-                await expect(routesPage.protocolsBadgeCell.nth(0)).toContainText(/http/);
-                await expect(routesPage.protocolsBadgeCell.nth(1)).toContainText(/https/);
-                await expect(routesPage.pathsCell).toContainText('/awesome/v1');
-                await expect(routesPage.hostsCell).toHaveText(' – ');
-                await expect(routesPage.headersCell).toHaveText(' – ');
-                await expect(routesPage.methodsCell).toHaveText(' – ');
-                await expect(routesPage.sourcesCell).toHaveText(' – ');
-                await expect(routesPage.destinationsCell).toHaveText(' – ');
+          await test.step('And there should be 1 gateway service and route count in the default workspace overview page', async () => {
+            await workspacesOverviewPage.navigate('default');
+            const workspaceOverviewMetrics = await workspacesOverviewPage.getAllMetricValues();
+            expect(workspaceOverviewMetrics.services).toBe(1);
+            expect(workspaceOverviewMetrics.routes).toBe(1);
 
-                // TODO: Advanced details for route details
-              });
-
-              await test.step('And there should be 1 gateway service and 1 route count in the workspace summary page', async () => {
-                await workspacesPage.navigate();
-                await workspacesPage.assertMetricValues(1, 1, 0, 0, '--');
-
-                await test.step('And there should be 1 gateway services and 1 routes count in the workspaces table', async() => {
-                  const workspaceMetrics = await workspacesPage.getWorkspaceRowData(0);
-                  expect(workspaceMetrics.gatewayServices).toBe(1);
-                  expect(workspaceMetrics.routes).toBe(1);
-
-                  await test.step('And there should still be 0 counts for consumers entity', async() => {
-                    expect(workspaceMetrics.consumers).toBe(0)
-                  });
-                });
-              });
-
-              await test.step('And there should be 1 gateway service and route count in the default workspace overview page', async () => {
-                await workspacesOverviewPage.navigate('default');
-                const workspaceOverviewMetrics = await workspacesOverviewPage.getAllMetricValues();
-                expect(workspaceOverviewMetrics.services).toBe(1);
-                expect(workspaceOverviewMetrics.routes).toBe(1);
-
-                await test.step('And there should still be 0 counts for other entities', async() => {
-                  expect(workspaceOverviewMetrics.consumers).toBe(0)
-                  expect(workspaceOverviewMetrics.plugins).toBe(0);
-                });
-              });
+            await test.step('And there should still be 0 counts for other entities', async() => {
+              expect(workspaceOverviewMetrics.consumers).toBe(0)
+              expect(workspaceOverviewMetrics.plugins).toBe(0);
             });
           });
         });
@@ -219,7 +219,7 @@ test.describe('Kong Gateway User Journey Tests', () => {
     });
   });
 
-  test.afterEach(async ({ page }) => {
+  test.afterEach(async () => {
 
     try {
       await routesPage.navigate();
