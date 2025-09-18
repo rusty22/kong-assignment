@@ -15,16 +15,21 @@ npm install
 
 In the top-level folder, run some of the following commands to run the tests:
 
-Run all the end-to-end tests.
+Run all the end-to-end tests in headless mode.
 ```
   npx playwright test
 ```
+
+Run all the end-to-end tests in headed mode.
+```
+  npx playwright test --headed
+```
+
 Run only the smoke tests:
 ```
   npx playwright test --grep @smoke
 ```
 
-Run tests by 
 Run only the user journey tests:
 ```
    npx playwright test --grep @user-journey
@@ -40,13 +45,13 @@ Runs the tests in debug mode.
   npx playwright test --debug
 ```
 
-Opens the Playwright UI Interactive Test Runner:
+Open the Playwright UI Interactive Test Runner:
 ```
   npx playwright test --ui
 ```
 
 # Reporting
-View the HTML report after tests run:
+View the HTML report after tests run (always opens after running by default):
 ```
  npx playwright show-report
 ```
