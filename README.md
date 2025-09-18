@@ -56,7 +56,7 @@ Open the Playwright UI Interactive Test Runner:
 ```
 # CI/CD
 
-When a commit is made to the `main` branch, a [Github Actions Pipeline](.github\workflows\playwright.yml) is ran. This includes setup/teardown of the test environment done using `docker-compose.yml` file provided in the assignment. Test run history can be viewed [here](https://github.com/rusty22/kong-assignment/actions).
+When a commit is made to the `main` branch, a [Github Actions Pipeline](.github/workflows/playwright.yml) is ran. This includes setup/teardown of the test environment done using `docker-compose.yml` file provided in the assignment. Test run history can be viewed [here](https://github.com/rusty22/kong-assignment/actions).
 
 # Reporting
 View the HTML report after tests run (always opens after running by default):
