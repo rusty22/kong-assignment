@@ -21,7 +21,7 @@ test.describe('Kong Gateway User Journey Tests', () => {
     await workspacesPage.navigate();
   });
   
-  test('Gateway Service Creation - User Journey', async () => {
+  test('Gateway Service Creation - User Journey', { tag: '@user-journey' }, async () => {
 
     await test.step('Given I am an administrator on the Kong Manager UI', async () => {
 

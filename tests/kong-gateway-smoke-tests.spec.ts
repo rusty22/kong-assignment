@@ -9,7 +9,7 @@ test.describe('Kong Gateway Smoke Tests', () => {
         await workspacesPage.navigate();
     });
 
-    test('Smoke Test - Upon load', async () => {
+    test('Smoke Test - Upon load', { tag: '@Smoke' }, async () => {
         await test.step('Check kong header components are visible', async () => {
         expect(await workspacesPage.page.title()).toContain('Kong Manager');
         expect(workspacesPage.kongHeader.brandLogo).toBeVisible();
