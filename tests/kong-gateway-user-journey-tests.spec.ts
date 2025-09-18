@@ -109,7 +109,8 @@ test.describe('Kong Gateway User Journey Tests', () => {
           });
 
           await test.step('And once I save I should be in the service details page with details about the new service', async () => {
-            
+            await expect(gatewayServicesPage.statusMessage).toBeVisible();
+            await expect(routesPage.statusMessage).toHaveText(`Gateway Service "awesome-service" successfully created!`);
             await expect(isUUID(await gatewayServicesPage.serviceIdCell.innerText())).toBeTruthy();
             await expect(gatewayServicesPage.portCell).toHaveText('443')
             await expect(gatewayServicesPage.pathCell).toHaveText(' – ')
@@ -169,8 +170,10 @@ test.describe('Kong Gateway User Journey Tests', () => {
             await expect(routesPage.saveButton).toBeEnabled();
           });
 
-          await test.step('And once I save I should be in the routes details page with details about the new service', async () => {
+          await test.step('And once I save I should be in the routes details page with details about the new route', async () => {
             await routesPage.saveButton.click();
+            await expect(routesPage.statusMessage).toBeVisible();
+            await expect(routesPage.statusMessage).toHaveText(`Route "awesome-route" successfully created!`);
             await expect(isUUID(await routesPage.routeIdCell.innerText())).toBeTruthy();
             await expect(routesPage.routeNameCell).toHaveText('awesome-route')
             await expect(routesPage.lastUpdatedDateCell).toHaveText(expectedDateRegex)

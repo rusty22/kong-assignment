@@ -64,6 +64,8 @@ View the HTML report after tests run (always opens after running by default):
  npx playwright show-report
 ```
 
+You can also open the report at `playwright-report/index.html`.
+
 # Design Considerations
 
 I used the **page object model** pattern to model locators within the Workspace summary, Workspace overview, Gateway services, and routes pages. This helped to ensure reusable locators across several pages in the Kong Manager UI. For more complicated elements in the UI of a page, I decided to break it down further by making component classes that can be reused across pages (eg. Header and Sidebar ).
@@ -92,6 +94,11 @@ I also created `base-page.ts` which contain elements that always appear througho
 
 These are some additional checks I would do if I had more time:
 - Check that you cannot delete a gateway service without deleting its route first
+- Checking filtering behaviour
+- Checking column visibility behaviour
+- Checking searchbox behaviour within the tables
+- Setting up further entities for testing (consumers, plugins, redis, upstreams, certs, SNIs, keys, vaults) and its details
+- Checking external links go to the right URLs
 
 # Possible Improvements
 - Parallel execution
