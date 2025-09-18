@@ -104,7 +104,7 @@ export class WorkspaceOverviewPage extends BasePage {
   // Navigation and page loading
   async navigate(workspaceName: string = 'default'): Promise<void> {
     await this.page.goto(`/${workspaceName}/overview`);
-    await this.overviewSection.waitFor({ state: 'visible' });
+    await this.waitForPageLoad();
   }
 
   // Metric helper methods

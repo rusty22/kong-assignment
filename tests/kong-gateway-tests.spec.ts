@@ -14,8 +14,7 @@ test.describe('Kong Take Home Assignment', () => {
       workspacesPage = new WorkspacesPage(page);
       workspacesOverviewPage = new WorkspaceOverviewPage(page);
       gatewayServicesPage = new GatewayServicesPage(page);
-      await page.goto('/');
-      await workspacesPage.waitForPageLoad();
+      await workspacesPage.navigate();
     });
 
     test('Smoke Test - Upon load', async () => {
@@ -77,8 +76,6 @@ test.describe('Kong Take Home Assignment', () => {
 
         await test.step('When I go to the default workspace', async () => {
           await workspacesPage.defaultWorkspaceLink.click();
-          // Wait for navigation
-          await workspacesOverviewPage.waitForPageLoad();
 
           await test.step('Then I should be able to view the default workspace overview page', async () => {
             await expect(workspacesOverviewPage.title).toHaveText('Overview');
@@ -135,6 +132,42 @@ test.describe('Kong Take Home Assignment', () => {
                 await expect(gatewayServicesPage.protocolCell).toHaveText('https')
                 await expect(gatewayServicesPage.tagsCell).toHaveText(' – ')
               });
+
+              await test.step('And there should be 1 gateway service count in the workspace summary page', async () => {
+                await workspacesPage.navigate();
+                const metrics = await workspacesPage.getAllMetricValues();
+                expect(metrics.services).toBe(1);
+                expect(metrics.routes).toBe(0);
+                expect(metrics.consumers).toBe(0);
+                expect(metrics.plugins).toBe(0);
+                expect(metrics.apiRequests).toBe('--');
+
+                await test.step('And there should be 1 gateway services count in the workspaces table', async() => {
+                  const workspaceMetrics = await workspacesPage.getWorkspaceRowData(0);
+                  expect(workspaceMetrics.gatewayServices).toBe(1);
+
+                  await test.step('And there should still be 0 counts for other entities', async() => {
+                    expect(workspaceMetrics.consumers).toBe(0)
+                    expect(workspaceMetrics.routes).toBe(0);
+                  });
+                });
+              });
+
+              await test.step('And there should be 1 gateway service count in the default workspace overview page', async () => {
+                await workspacesOverviewPage.navigate('default');
+                const workspaceOverviewMetrics = await workspacesOverviewPage.getAllMetricValues();
+                expect(workspaceOverviewMetrics.services).toBe(1);
+
+                await test.step('And there should still be 0 counts for other entities', async() => {
+                  expect(workspaceOverviewMetrics.routes).toBe(0);
+                  expect(workspaceOverviewMetrics.consumers).toBe(0)
+                  expect(workspaceOverviewMetrics.plugins).toBe(0);
+                });
+              });
+            });
+
+            await test.step('When I create additional route', async () => {
+                
             });
           });
         });

@@ -1,6 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './shared/base-page';
 import { KongCallToActionComponent } from './components/call-to-action-component';
+import { TableComponent } from './components/table-component';
 
 interface WorkspaceSummaryMetricValues {
   services: number | null;
@@ -145,6 +146,12 @@ export class WorkspacesPage extends BasePage {
 
     // Kong Konnect - Call to Action component
     this.callToActionComponent = new KongCallToActionComponent(page);
+  }
+
+  // Navigation and page loading
+  async navigate(): Promise<void> {
+    await this.page.goto('/workspaces');
+    await this.waitForPageLoad();
   }
 
   async getMetricValue(metricName: string): Promise<string | null> {
