@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './shared/base-page';
 import { KongCallToActionComponent } from './components/call-to-action-component';
 import { TableComponent } from './components/table-component';
@@ -62,15 +62,13 @@ export class WorkspacesPage extends BasePage {
   // Workspaces list section
   readonly workspaceListCard: Locator;
   readonly workspaceFilter: Locator;
-  readonly workspaceTable: Locator;
-  readonly workspaceTableHeaders: Locator;
+  readonly workspaceTable: TableComponent;
   
   readonly workspaceNameHeader: Locator;
   readonly gatewayServicesHeader: Locator;
   readonly consumersHeader: Locator;
   readonly routesHeader: Locator;
   
-  readonly workspaceRows: Locator;
   readonly defaultWorkspaceLink: Locator;
   readonly defaultWorkspaceIcon: Locator;
   readonly defaultWorkspaceName: Locator;
@@ -124,16 +122,13 @@ export class WorkspacesPage extends BasePage {
     // Workspaces list section
     this.workspaceListCard = page.locator('.workspace-list');
     this.workspaceFilter = page.locator('.workspace-filter input');
-    this.workspaceTable = page.locator('.k-table-view');
-    this.workspaceTableHeaders = this.workspaceTable.locator('th.table-headers');
+    this.workspaceTable = new TableComponent(page);
     
-    this.workspaceNameHeader = page.getByTestId('table-header-name');
     this.gatewayServicesHeader = page.getByTestId('table-header-totalServices');
     this.consumersHeader = page.getByTestId('table-header-totalConsumers');
     this.routesHeader = page.getByTestId('table-header-totalRoutes');
     
-    this.workspaceRows = this.workspaceTable.locator('tbody tr');
-    this.defaultWorkspaceLink = this.workspaceRows.getByTestId('workspace-link-default');
+    this.defaultWorkspaceLink = this.workspaceTable.tableBody.getByTestId('workspace-link-default');
     this.defaultWorkspaceIcon = this.defaultWorkspaceLink.locator('.workspace-icon');
     this.defaultWorkspaceName = this.defaultWorkspaceLink.locator('.workspace-name');
 
@@ -170,7 +165,7 @@ export class WorkspacesPage extends BasePage {
   }
 
   async getWorkspaceRowData(rowIndex: number = 0): Promise<WorkspaceRowData> {
-    const row = this.workspaceRows.nth(rowIndex);
+    const row = this.workspaceTable.tableRows.nth(rowIndex);
     const cells = row.locator('td');
     
     return {
@@ -186,4 +181,15 @@ export class WorkspacesPage extends BasePage {
     const nextDisabled = await this.nextButton.isDisabled();
     return { previous: prevDisabled, next: nextDisabled };
   }
+
+
+  async assertMetricValues(expectedServices: number, expectedRoutes: number, expectedConsumers: number, expectedPlugins: number, expectedApiRequests: string): Promise<void> {
+    const metrics = await this.getAllMetricValues();
+    expect(metrics.services).toBe(expectedServices);
+    expect(metrics.routes).toBe(expectedRoutes);
+    expect(metrics.consumers).toBe(expectedConsumers);
+    expect(metrics.plugins).toBe(expectedPlugins);
+    expect(metrics.apiRequests).toBe(expectedApiRequests);
+  }
+
 }

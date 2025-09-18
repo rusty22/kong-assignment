@@ -4,15 +4,8 @@ import { TableComponent } from "./components/table-component";
 
 export class GatewayServicesPage extends BasePage {
     
-  // Page identifiers and main sections
-  readonly pageLocator: Locator;
-  readonly servicesSection: Locator;
-  readonly pageHeader: Locator;
-  readonly pageTitle: Locator;
-  readonly supportText: Locator;
-  readonly learnMoreLink: Locator;
-
   // Services list section
+  readonly servicesSection: Locator;
   readonly servicesListContainer: Locator;
   readonly servicesCard: Locator;
   readonly tableView: Locator;
@@ -21,8 +14,16 @@ export class GatewayServicesPage extends BasePage {
   readonly addGatewayServiceButton: Locator;
 
   readonly serviceUrlInput: Locator;
+  readonly serviceNameInput: Locator;
   readonly saveButton: Locator;
+  readonly supportText: Locator;
 
+  readonly serviceIdCell: Locator;
+  readonly serviceNameCell: Locator;
+  readonly enabledStatusCell: Locator;
+  readonly lastUpdatedDateCell: Locator;
+  readonly createdDateCell: Locator;
+  
   // Service Details
   readonly pathCell: Locator;
   readonly portCell: Locator;
@@ -34,12 +35,8 @@ export class GatewayServicesPage extends BasePage {
     super(page);
     
     // Page identifiers and main sections
-    this.pageLocator = page.locator('.services.page');
     this.servicesSection = page.locator('section.services-listing');
-    this.pageHeader = this.servicesSection.locator('.page-header');
-    this.pageTitle = this.pageHeader.locator('.title');
-    this.supportText = this.pageHeader.locator('.support-text');
-    this.learnMoreLink = this.supportText.locator('.k-external-link');
+    this.supportText = page.locator('.support-text');
 
     // Services list section
     this.servicesListContainer = page.locator('.kong-ui-entities-gateway-services-list');
@@ -47,15 +44,29 @@ export class GatewayServicesPage extends BasePage {
 
     this.gatewayServicesTable = new TableComponent(page);
     this.addGatewayServiceButton = page.getByTestId('toolbar-add-gateway-service');
-
     this.serviceUrlInput = page.getByTestId('gateway-service-url-input');
+    this.serviceNameInput = page.getByTestId('gateway-service-name-input');
     this.saveButton = page.getByTestId('service-create-form-submit');
 
     // Gateway Service Details
+    this.serviceIdCell = page.getByTestId('id-property-value');
+    this.serviceNameCell = page.getByTestId('name-plain-text');
+    this.enabledStatusCell = page.getByTestId('enabled-badge-status');
+    this.lastUpdatedDateCell = page.getByTestId('updated_at-date');
+    this.createdDateCell = page.getByTestId('created_at-date');
     this.pathCell = page.getByTestId('path-property-value');
     this.portCell = page.getByTestId('port-plain-text');
     this.protocolCell = page.getByTestId('protocol-plain-text');
     this.hostNameCell = page.getByTestId('host-plain-text');
     this.tagsCell = page.getByTestId('tags-property-value');
+
+    // Advanced section locators (future improvement)
   }
+
+  // Navigation and page loading
+  async navigate(serviceName: string = 'default'): Promise<void> {
+    await this.page.goto(`/${serviceName}/services`);
+    await this.waitForPageLoad();
+  }
+
 }

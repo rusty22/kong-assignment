@@ -28,9 +28,9 @@ export class TableComponent {
   constructor(page: Page) {
     this.page = page;
 
-    // Table toolbar elements
-    this.filterButton = page.getByTestId('column-visibility-menu-button');
-    this.columnVisibilityButton = page.getByTestId('column-visibility-menu-button')
+    // Table toolbar elements (if present) - some tables don't have these elements
+    this.filterButton = page.getByTestId('filter-button');
+    this.columnVisibilityButton = page.getByTestId('column-visibility-menu-button');
     
     // Table elements
     this.tableContainer = page.locator('.table-container');
